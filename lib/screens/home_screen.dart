@@ -1,4 +1,5 @@
 import 'package:fast_api_and_flutter/provider/theam_provider.dart';
+import 'package:fast_api_and_flutter/utils/banner.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -325,6 +326,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final tp = Provider.of<TaskProvider>(context);
     final them = Provider.of<ThemeProvider>(context);
+
     final tasks = tp.tasks;
 
     final c = _AppColors.of(context);
@@ -390,68 +392,77 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
 
-        body: RefreshIndicator(
-          color: _AppColors.accent,
-          backgroundColor: c.surface,
-          strokeWidth: 2.5,
+        body: Column(
+          children: [
+            const InternetBanner(),
+            Expanded(
+              child: RefreshIndicator(
+                color: _AppColors.accent,
+                backgroundColor: c.surface,
+                strokeWidth: 2.5,
 
-          onRefresh: () => tp.fetchTasks(),
-          child: tasks.isEmpty
-              ? ListView(
-                  children: [
-                    SizedBox(height: MediaQuery.of(context).size.height * 0.28),
-                    Center(
-                      child: Column(
+                onRefresh: () => tp.fetchTasks(),
+                child: tasks.isEmpty
+                    ? ListView(
                         children: [
-                          Container(
-                            width: 72,
-                            height: 72,
-                            decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: _AppColors.accentGlow,
-                            ),
-                            child: const Icon(
-                              Icons.checklist_rounded,
-                              color: _AppColors.accent,
-                              size: 34,
-                            ),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.28,
                           ),
-                          const SizedBox(height: 16),
-                          Text(
-                            'All clear!',
-                            style: TextStyle(
-                              color: c.hi,
-                              fontSize: 20,
-                              fontWeight: FontWeight.w700,
+                          Center(
+                            child: Column(
+                              children: [
+                                Container(
+                                  width: 72,
+                                  height: 72,
+                                  decoration: const BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: _AppColors.accentGlow,
+                                  ),
+                                  child: const Icon(
+                                    Icons.checklist_rounded,
+                                    color: _AppColors.accent,
+                                    size: 34,
+                                  ),
+                                ),
+                                const SizedBox(height: 16),
+                                Text(
+                                  'All clear!',
+                                  style: TextStyle(
+                                    color: c.hi,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                                const SizedBox(height: 6),
+                                Text(
+                                  'Add your first task below',
+                                  style: TextStyle(color: c.mid, fontSize: 14),
+                                ),
+                              ],
                             ),
-                          ),
-                          const SizedBox(height: 6),
-                          Text(
-                            'Add your first task below',
-                            style: TextStyle(color: c.mid, fontSize: 14),
                           ),
                         ],
+                      )
+                    : ListView.builder(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        padding: const EdgeInsets.only(top: 10, bottom: 100),
+                        itemCount: tasks.length,
+                        itemBuilder: (ctx, i) {
+                          final task = tasks[i];
+                          return _TaskTile(
+                            key: ValueKey(task.id),
+                            task: task,
+                            isLoading: _isLoading(task.id),
+                            colors: c,
+                            onEdit: () =>
+                                _showEditDialog(tp, task.id, task.description),
+                            onDelete: () => _deleteTask(tp, task.id),
+                          );
+                        },
                       ),
-                    ),
-                  ],
-                )
-              : ListView.builder(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  padding: const EdgeInsets.only(top: 10, bottom: 100),
-                  itemCount: tasks.length,
-                  itemBuilder: (ctx, i) {
-                    final task = tasks[i];
-                    return _TaskTile(
-                      key: ValueKey(task.id),
-                      task: task,
-                      isLoading: _isLoading(task.id),
-                      colors: c,
-                      onEdit: () =>
-                          _showEditDialog(tp, task.id, task.description),
-                      onDelete: () => _deleteTask(tp, task.id),
-                    );
-                  },
-                ),
+              ),
+            ),
+          ],
         ),
 
         bottomNavigationBar: _InputBar(

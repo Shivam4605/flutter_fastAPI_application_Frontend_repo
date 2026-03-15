@@ -1,3 +1,4 @@
+import 'package:fast_api_and_flutter/provider/connectivity_check_provider.dart';
 import 'package:fast_api_and_flutter/provider/theam_provider.dart';
 import 'package:fast_api_and_flutter/screens/home_screen.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +17,8 @@ void main() async {
         ChangeNotifierProvider(create: (_) => TaskProvider()),
 
         ChangeNotifierProvider.value(value: themeProvider),
+
+        ChangeNotifierProvider(create: (_) => InternetProvider()),
       ],
       child: const MyApp(),
     ),
