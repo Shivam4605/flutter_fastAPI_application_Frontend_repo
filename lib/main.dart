@@ -8,7 +8,7 @@ import 'provider/task_provider.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  final themeProvider = ThemeProvider();
+  ThemeProvider themeProvider = ThemeProvider();
   await themeProvider.loadTheme();
 
   runApp(
