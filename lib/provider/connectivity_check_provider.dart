@@ -21,7 +21,7 @@ class InternetProvider extends ChangeNotifier {
     List<ConnectivityResult> result = await _connectivity.checkConnectivity();
     _updateConnection(result);
   }
-
+  
   void _listenConnection() {
     _connectivity.onConnectivityChanged.listen((result) {
       _updateConnection(result);
