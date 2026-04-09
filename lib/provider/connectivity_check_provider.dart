@@ -15,7 +15,7 @@ class InternetProvider extends ChangeNotifier {
     _checkInitialConnection();
     _listenConnection();
   }
-
+  
   // this method is used to check the internet connection
   Future<void> _checkInitialConnection() async {
     List<ConnectivityResult> result = await _connectivity.checkConnectivity();
