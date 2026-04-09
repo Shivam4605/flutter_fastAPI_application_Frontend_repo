@@ -11,6 +11,7 @@ class InternetProvider extends ChangeNotifier {
     _init();
   }
 
+
   void _init() {
     _checkInitialConnection();
     _listenConnection();
